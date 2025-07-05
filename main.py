@@ -50,7 +50,7 @@ def menu_principal() -> None:
     Exibe o menu principal e direciona o usuário para os submenus.
     """
     while True:
-        print("\n=== MENU PRINCIPAL ===")
+        print("=== MENU PRINCIPAL ===")
         print("1. Acessar como Cliente")
         print("2. Acessar como Administrador")
         print("3. Visualizar Voos (modo leitura)")
@@ -79,7 +79,7 @@ def menu_visualizacao() -> None:
     Menu público com opções básicas de consulta.
     """
     while True:
-        print("\n=== VISUALIZAÇÃO DE VOOS ===")
+        print("=== VISUALIZAÇÃO DE VOOS ===")
         print("1. Listar voos")
         print("2. Ver destino de um voo")
         print("3. Ver ocupação geral")
@@ -137,7 +137,7 @@ def menu_cliente() -> None:
     Menu destinado ao cliente, com opções de consulta e reserva de assentos.
     """
     while True:
-        print("\n=== MENU CLIENTE ===")
+        print("=== MENU CLIENTE ===")
         print("1. Ver voos disponíveis")
         print("2. Reservar assento")
         print("3. Ver histórico de reservas")
@@ -163,7 +163,7 @@ def listar_voos() -> None:
     """
     Exibe a lista de todos os voos com seus destinos.
     """
-    print("\n=== VOOS DISPONÍVEIS ===")
+    print("=== VOOS DISPONÍVEIS ===")
     for i, voo in enumerate(voos):
         print(f"{i} - Voo {voo.id_voo} para {voo.destino}")
 
@@ -173,7 +173,7 @@ def ver_destino() -> None:
     """
     listar_voos()
     try:
-        idx: int = int(input("\nDigite o número do voo: "))
+        idx: int = int(input("Digite o número do voo: "))
         voo: Voo = voos[idx]
         print(f"Destino do voo {voo.id_voo}: {voo.destino}")
     except (ValueError, IndexError):
@@ -185,9 +185,9 @@ def ver_tripulacao() -> None:
     """
     listar_voos()
     try:
-        idx: int = int(input("\nDigite o número do voo: "))
+        idx: int = int(input("Digite o número do voo: "))
         voo: Voo = voos[idx]
-        print(f"\nTripulação do voo {voo.id_voo}:")
+        print(f"Tripulação do voo {voo.id_voo}:")
         for membro in voo.tripulacao:
             print(f"{membro.funcao}: {membro.nome} (CPF: {membro.cpf})")
     except (ValueError, IndexError):
@@ -199,10 +199,10 @@ def ver_ocupacao() -> None:
     """
     listar_voos()
     try:
-        idx: int = int(input("\nDigite o número do voo: "))
+        idx: int = int(input("Digite o número do voo: "))
         voo: Voo = voos[idx]
 
-        print(f"\n=== Ocupação dos assentos no voo {voo.id_voo} para {voo.destino} ===\n")
+        print(f"=== Ocupação dos assentos no voo {voo.id_voo} para {voo.destino} ===")
 
         for assento in voo.assentos:
             status = "✔ LIVRE" if not assento.ocupado else " OCUPADO"
@@ -210,7 +210,7 @@ def ver_ocupacao() -> None:
 
         ocupados = sum(1 for a in voo.assentos if a.ocupado)
         livres = 250 - ocupados
-        print(f"\nResumo: {ocupados} ocupados | {livres} livres")
+        print(f"Resumo: {ocupados} ocupados | {livres} livres")
 
     except (ValueError, IndexError):
         print(" Entrada inválida.")
@@ -221,9 +221,9 @@ def ver_passageiros() -> None:
     """
     listar_voos()
     try:
-        idx: int = int(input("\nDigite o número do voo: "))
+        idx: int = int(input("Digite o número do voo: "))
         voo: Voo = voos[idx]
-        print(f"\nPassageiros do voo {voo.id_voo}:")
+        print(f"Passageiros do voo {voo.id_voo}:")
         for assento in voo.assentos:
             if assento.ocupado:
                 cliente = assento.cliente
@@ -238,15 +238,15 @@ def reservar_assento() -> None:
     """
     listar_voos()
     try:
-        idx: int = int(input("\nEscolha o número do voo para reserva: "))
+        idx: int = int(input("Escolha o número do voo para reserva: "))
         voo: Voo = voos[idx]
 
-        print(f"\n=== Assentos no voo {voo.id_voo} para {voo.destino} ===\n")
+        print(f"=== Assentos no voo {voo.id_voo} para {voo.destino} ===\n")
         for assento in voo.assentos:
-            status = "✔ LIVRE" if not assento.ocupado else " OCUPADO"
+            status = " LIVRE" if not assento.ocupado else " OCUPADO"
             print(f"[{assento.numero:03}] {status}")
 
-        numero: int = int(input("\nDigite o número do assento desejado: "))
+        numero: int = int(input("Digite o número do assento desejado: "))
         assento_escolhido = next((a for a in voo.assentos if a.numero == numero), None)
 
         if not assento_escolhido:
@@ -265,7 +265,7 @@ def reservar_assento() -> None:
         assento_escolhido.reservar(cliente)
         cliente.adicionar_reserva(voo.id_voo, voo.destino, assento_escolhido.numero)
 
-        print(f"\n✅ Reserva feita com sucesso para {cliente.nome} no assento {numero}!")
+        print(f" Reserva feita com sucesso para {cliente.nome} no assento {numero}!")
 
     except (ValueError, IndexError):
         print(" Entrada inválida.")
@@ -279,7 +279,7 @@ def ver_historico_cliente() -> None:
     for voo in voos:
         for assento in voo.assentos:
             if assento.ocupado and assento.cliente.cpf == cpf:
-                print(f"\nReserva encontrada:")
+                print(f"Reserva encontrada:")
                 print(f"Nome: {assento.cliente.nome}")
                 for r in assento.cliente.reservas:
                     print(f"- Voo {r['voo']} para {r['destino']} - Assento {r['assento']}")
