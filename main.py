@@ -42,4 +42,36 @@ for numero_voo in range(10):
     voos.append(voo)
 
 print(" Todos os voos foram criados com sucesso!!")
+clear_screen()
+
+#menu principal
+def menu_principal() -> None:
+    """
+    Exibe o menu principal e direciona o usuário para os submenus.
+    """
+    while True:
+        print("\n=== MENU PRINCIPAL ===")
+        print("1. Acessar como Cliente")
+        print("2. Acessar como Administrador")
+        print("3. Visualizar Voos (modo leitura)")
+        print("4. Sair")
+
+        opcao: str = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            clear_screen()
+            print("[!] Menu de cliente ainda em construção.")
+        elif opcao == "2":
+            clear_screen()
+            #enu_administrador()
+        elif opcao == "3":
+            clear_screen()
+            #menu_visualizacao()
+        elif opcao == "4":
+            print("Sistema encerrado. Até mais!")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+            
+#menu visualiza
 
