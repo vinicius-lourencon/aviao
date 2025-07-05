@@ -73,31 +73,152 @@ def menu_principal() -> None:
         else:
             print("Opção inválida. Tente novamente.")
             
+#menu visu
+def menu_visualizacao() -> None:
+    """
+    Menu público com opções básicas de consulta.
+    """
+    while True:
+        print("\n=== VISUALIZAÇÃO DE VOOS ===")
+        print("1. Listar voos")
+        print("2. Ver destino de um voo")
+        print("3. Ver ocupação geral")
+        print("0. Voltar")
+
+        escolha: str = input("Escolha uma opção: ")
+
+        if escolha == "1":
+            clear_screen()
+            listar_voos()
+        elif escolha == "2":
+            clear_screen()
+            ver_destino()
+        elif escolha == "3":
+            clear_screen()
+            ver_ocupacao()
+        elif escolha == "0":
+            break
+        else:
+            print("Opção inválida.")
 #menu adm
 def menu_administrador() -> None:
     """
-    Menu do administrador com acesso a funções de leitura do sistema.
+    Menu exclusivo do administrador com acesso a dados completos.
     """
     while True:
-        clear_screen()
-        print("\n=== MENU ADMINISTRADOR ===")
-        print("1. Listar todos os voos")
+        print("=== MENU ADMINISTRADOR ===")
+        print("1. Listar voos")
         print("2. Ver tripulação de um voo")
-        print("3. Ver ocupação de um voo")
-        print("0. Voltar ao menu principal")
+        print("3. Ver relatório de ocupação")
+        print("4. Ver passageiros do voo")
+        print("0. Voltar")
 
         opcao: str = input("Escolha uma opção: ")
 
         if opcao == "1":
             clear_screen()
-            #listar_voos()
+            listar_voos()
         elif opcao == "2":
             clear_screen()
-            #ver_tripulacao()
+            ver_tripulacao()
         elif opcao == "3":
             clear_screen()
-            #ver_ocupacao()
+            ver_ocupacao()
+        elif opcao == "4":
+            clear_screen()
+            ver_passageiros()
         elif opcao == "0":
             break
         else:
             print("Opção inválida.")
+#menu cliente
+def menu_cliente() -> None:
+    """
+    Menu destinado ao cliente (em construção).
+    """
+    while True:
+        print("=== MENU CLIENTE ===")
+        print("1. Ver voos disponíveis")
+        print("2. Reservar assento")
+        print("3. Ver histórico de reservas")
+        print("0. Voltar")
+
+        opcao: str = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            clear_screen()
+            listar_voos()
+        elif opcao == "2":
+            clear_screen()
+            print("[!] Função de reserva ainda em construção.")
+        elif opcao == "3":
+            clear_screen()
+            print("[!] Histórico ainda em construção.")
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
+
+def listar_voos() -> None:
+    """
+    Exibe a lista de todos os voos com seus destinos.
+    """
+    print("\n=== VOOS DISPONÍVEIS ===")
+    for i, voo in enumerate(voos):
+        print(f"{i} - Voo {voo.id_voo} para {voo.destino}")
+
+def ver_destino() -> None:
+    """
+    Permite consultar o destino de um voo específico.
+    """
+    listar_voos()
+    try:
+        idx: int = int(input("\nDigite o número do voo: "))
+        voo: Voo = voos[idx]
+        print(f"Destino do voo {voo.id_voo}: {voo.destino}")
+    except (ValueError, IndexError):
+        print("Entrada inválida.")
+
+def ver_tripulacao() -> None:
+    """
+    Mostra a tripulação completa de um voo.
+    """
+    listar_voos()
+    try:
+        idx: int = int(input("\nDigite o número do voo: "))
+        voo: Voo = voos[idx]
+        print(f"\nTripulação do voo {voo.id_voo}:")
+        for membro in voo.tripulacao:
+            print(f"{membro.funcao}: {membro.nome} (CPF: {membro.cpf})")
+    except (ValueError, IndexError):
+        print("Entrada inválida.")
+
+def ver_ocupacao() -> None:
+    """
+    Mostra a ocupação geral de assentos de um voo.
+    """
+    listar_voos()
+    try:
+        idx: int = int(input("\nDigite o número do voo: "))
+        voo: Voo = voos[idx]
+        voo.relatorio_ocupacao()
+    except (ValueError, IndexError):
+        print("Entrada inválida.")
+
+def ver_passageiros() -> None:
+    """
+    Mostra os passageiros alocados em um voo.
+    """
+    listar_voos()
+    try:
+        idx: int = int(input("\nDigite o número do voo: "))
+        voo: Voo = voos[idx]
+        print(f"\nPassageiros do voo {voo.id_voo}:")
+        for assento in voo.assentos:
+            if assento.ocupado:
+                cliente = assento.cliente
+                print(f"Assento {assento.numero} - {cliente.nome} (CPF: {cliente.cpf})")
+    except (ValueError, IndexError):
+        print("Entrada inválida.")
+
+menu_principal()
