@@ -60,7 +60,7 @@ def menu_principal() -> None:
 
         if opcao == "1":
             clear_screen()
-            print("[!] Menu de cliente ainda em construção.")
+            menu_cliente()
         elif opcao == "2":
             clear_screen()
             menu_administrador()
@@ -195,15 +195,25 @@ def ver_tripulacao() -> None:
 
 def ver_ocupacao() -> None:
     """
-    Mostra a ocupação geral de assentos de um voo.
+    Exibe todos os assentos de um voo com indicação visual de ocupação.
     """
     listar_voos()
     try:
         idx: int = int(input("\nDigite o número do voo: "))
         voo: Voo = voos[idx]
-        voo.relatorio_ocupacao()
+
+        print(f"\n=== Ocupação dos assentos no voo {voo.id_voo} para {voo.destino} ===\n")
+
+        for assento in voo.assentos:
+            status = "✔ LIVRE" if not assento.ocupado else " OCUPADO"
+            print(f"[{assento.numero:03}] {status}")
+
+        ocupados = sum(1 for a in voo.assentos if a.ocupado)
+        livres = 250 - ocupados
+        print(f"\nResumo: {ocupados} ocupados | {livres} livres")
+
     except (ValueError, IndexError):
-        print("Entrada inválida.")
+        print(" Entrada inválida.")
 
 def ver_passageiros() -> None:
     """
@@ -224,28 +234,32 @@ def ver_passageiros() -> None:
 def reservar_assento() -> None:
     """
     Permite ao cliente reservar um assento em um voo disponível.
+    Exibe todos os 250 assentos com indicação de ocupado ou livre.
     """
     listar_voos()
     try:
         idx: int = int(input("\nEscolha o número do voo para reserva: "))
         voo: Voo = voos[idx]
 
-        print(f"\nAssentos disponíveis no voo {voo.id_voo} para {voo.destino}:")
-        disponiveis = [a for a in voo.assentos if not a.ocupado]
-        for assento in disponiveis[:20]:  # Mostra até 20 para não poluir
-            print(f"Assento {assento.numero}")
+        print(f"\n=== Assentos no voo {voo.id_voo} para {voo.destino} ===\n")
+        for assento in voo.assentos:
+            status = "✔ LIVRE" if not assento.ocupado else " OCUPADO"
+            print(f"[{assento.numero:03}] {status}")
 
-        numero: int = int(input("Digite o número do assento desejado: "))
-        assento_escolhido = next((a for a in disponiveis if a.numero == numero), None)
+        numero: int = int(input("\nDigite o número do assento desejado: "))
+        assento_escolhido = next((a for a in voo.assentos if a.numero == numero), None)
 
         if not assento_escolhido:
-            print("Assento inválido ou já ocupado.")
+            print(" Assento inexistente.")
+            return
+        if assento_escolhido.ocupado:
+            print(" Esse assento já está ocupado. Tente outro.")
             return
 
         nome: str = input("Digite seu nome completo: ")
         cpf: str = input("Digite seu CPF (apenas números): ")
 
-        from entidades.cliente import Cliente  # evitar import circular
+        from entidades.cliente import Cliente
 
         cliente = Cliente(nome, cpf)
         assento_escolhido.reservar(cliente)
@@ -254,7 +268,7 @@ def reservar_assento() -> None:
         print(f"\n✅ Reserva feita com sucesso para {cliente.nome} no assento {numero}!")
 
     except (ValueError, IndexError):
-        print("Entrada inválida.")
+        print(" Entrada inválida.")
         
 def ver_historico_cliente() -> None:
     """

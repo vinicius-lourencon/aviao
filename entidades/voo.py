@@ -10,7 +10,7 @@ class Voo:
     def __init__(self, id_voo: str, destino: str) -> None:
         self._id_voo: str = id_voo
         self._destino: str = destino
-        self._assentos: List[Assento] = [Assento(str(i+1)) for i in range(250)]
+        self._assentos: List[Assento] = [Assento(i + 1) for i in range(250)]
         self._tripulacao: List[Tripulante] = []
 
     @property
