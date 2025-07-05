@@ -1,4 +1,6 @@
 
+from typing import List
+from entidades.cliente import Cliente
 from entidades.voo import Voo
 from entidades.assento import Assento
 from gerador import gerar_cliente_faker, gerar_tripulante_faker
@@ -13,7 +15,9 @@ def clear_screen() -> None:
 
 destinos = ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador", "Fortaleza",
     "Belo Horizonte", "Manaus", "Porto Alegre", "Curitiba", "Recife"]
+
 voos: list[Voo] = []
+clientes: List[Cliente] = []
 
  # Criaando 10 voos ja com tods as infrmacoes completas
 for numero_voo in range(10):
@@ -141,6 +145,7 @@ def menu_cliente() -> None:
         print("1. Ver voos disponíveis")
         print("2. Reservar assento")
         print("3. Ver histórico de reservas")
+        print("4. Fazer Cadastro")
         print("0. Voltar")
 
         opcao: str = input("Escolha uma opção: ")
@@ -154,6 +159,9 @@ def menu_cliente() -> None:
         elif opcao == "3":
             clear_screen()
             ver_historico_cliente()
+        elif opcao == "4":
+            clear_screen()
+            cadastrar_cliente()
         elif opcao == "0":
             break
         else:
@@ -286,5 +294,23 @@ def ver_historico_cliente() -> None:
                 return
 
     print("Nenhum histórico encontrado para esse CPF.")
+
+def cadastrar_cliente() -> None:
+    """
+    Cadastra um novo cliente no sistema.
+    """
+    print("=== Cadastro de Cliente ===")
+    nome: str = input("Nome completo: ")
+    cpf: str = input("CPF (apenas números): ")
+    data_nasc: str = input("Data de nascimento (DD/MM/AAAA): ")
+
+    from entidades.cliente import Cliente
+    from uuid import uuid4
+
+    id_ = str(uuid4())[:8]
+    novo_cliente = Cliente(nome, cpf, id_, data_nasc)
+    clientes.append(novo_cliente)
+
+    print(f" Cliente {nome} cadastrado com sucesso!\n")
 
 menu_principal()
