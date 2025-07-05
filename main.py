@@ -3,6 +3,13 @@ from entidades.voo import Voo
 from entidades.assento import Assento
 from gerador import gerar_cliente_faker, gerar_tripulante_faker
 import random
+import os
+
+def clear_screen() -> None:
+    """
+    Limpa a tela do terminal.
+    """
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 destinos = ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador", "Fortaleza",
     "Belo Horizonte", "Manaus", "Porto Alegre", "Curitiba", "Recife"]
@@ -35,3 +42,4 @@ for numero_voo in range(10):
     voos.append(voo)
 
 print(" Todos os voos foram criados com sucesso!!")
+
