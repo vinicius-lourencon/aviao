@@ -63,10 +63,10 @@ def menu_principal() -> None:
             print("[!] Menu de cliente ainda em construção.")
         elif opcao == "2":
             clear_screen()
-            #enu_administrador()
+            menu_administrador()
         elif opcao == "3":
             clear_screen()
-            #menu_visualizacao()
+            menu_visualizacao()
         elif opcao == "4":
             print("Sistema encerrado. Até mais!")
             break
@@ -134,10 +134,10 @@ def menu_administrador() -> None:
 #menu cliente
 def menu_cliente() -> None:
     """
-    Menu destinado ao cliente (em construção).
+    Menu destinado ao cliente, com opções de consulta e reserva de assentos.
     """
     while True:
-        print("=== MENU CLIENTE ===")
+        print("\n=== MENU CLIENTE ===")
         print("1. Ver voos disponíveis")
         print("2. Reservar assento")
         print("3. Ver histórico de reservas")
@@ -150,10 +150,10 @@ def menu_cliente() -> None:
             listar_voos()
         elif opcao == "2":
             clear_screen()
-            print("[!] Função de reserva ainda em construção.")
+            reservar_assento()
         elif opcao == "3":
             clear_screen()
-            print("[!] Histórico ainda em construção.")
+            ver_historico_cliente()
         elif opcao == "0":
             break
         else:
@@ -220,5 +220,57 @@ def ver_passageiros() -> None:
                 print(f"Assento {assento.numero} - {cliente.nome} (CPF: {cliente.cpf})")
     except (ValueError, IndexError):
         print("Entrada inválida.")
+
+def reservar_assento() -> None:
+    """
+    Permite ao cliente reservar um assento em um voo disponível.
+    """
+    listar_voos()
+    try:
+        idx: int = int(input("\nEscolha o número do voo para reserva: "))
+        voo: Voo = voos[idx]
+
+        print(f"\nAssentos disponíveis no voo {voo.id_voo} para {voo.destino}:")
+        disponiveis = [a for a in voo.assentos if not a.ocupado]
+        for assento in disponiveis[:20]:  # Mostra até 20 para não poluir
+            print(f"Assento {assento.numero}")
+
+        numero: int = int(input("Digite o número do assento desejado: "))
+        assento_escolhido = next((a for a in disponiveis if a.numero == numero), None)
+
+        if not assento_escolhido:
+            print("Assento inválido ou já ocupado.")
+            return
+
+        nome: str = input("Digite seu nome completo: ")
+        cpf: str = input("Digite seu CPF (apenas números): ")
+
+        from entidades.cliente import Cliente  # evitar import circular
+
+        cliente = Cliente(nome, cpf)
+        assento_escolhido.reservar(cliente)
+        cliente.adicionar_reserva(voo.id_voo, voo.destino, assento_escolhido.numero)
+
+        print(f"\n✅ Reserva feita com sucesso para {cliente.nome} no assento {numero}!")
+
+    except (ValueError, IndexError):
+        print("Entrada inválida.")
+        
+def ver_historico_cliente() -> None:
+    """
+    Permite consultar o histórico de reservas de um cliente a partir do CPF.
+    """
+    cpf: str = input("Digite o CPF do cliente: ")
+
+    for voo in voos:
+        for assento in voo.assentos:
+            if assento.ocupado and assento.cliente.cpf == cpf:
+                print(f"\nReserva encontrada:")
+                print(f"Nome: {assento.cliente.nome}")
+                for r in assento.cliente.reservas:
+                    print(f"- Voo {r['voo']} para {r['destino']} - Assento {r['assento']}")
+                return
+
+    print("Nenhum histórico encontrado para esse CPF.")
 
 menu_principal()
