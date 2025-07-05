@@ -73,5 +73,31 @@ def menu_principal() -> None:
         else:
             print("Opção inválida. Tente novamente.")
             
-#menu visualiza
+#menu adm
+def menu_administrador() -> None:
+    """
+    Menu do administrador com acesso a funções de leitura do sistema.
+    """
+    while True:
+        clear_screen()
+        print("\n=== MENU ADMINISTRADOR ===")
+        print("1. Listar todos os voos")
+        print("2. Ver tripulação de um voo")
+        print("3. Ver ocupação de um voo")
+        print("0. Voltar ao menu principal")
 
+        opcao: str = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            clear_screen()
+            #listar_voos()
+        elif opcao == "2":
+            clear_screen()
+            #ver_tripulacao()
+        elif opcao == "3":
+            clear_screen()
+            #ver_ocupacao()
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
