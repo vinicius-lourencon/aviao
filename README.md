@@ -62,7 +62,7 @@ projeto_reserva_voo/
 
 ```bash
 git clone https://github.com/vinicius-lourencon/aviao.git
-cd projeto_reserva_voo
+cd aviao
 ```
 
 2. Instale a dependência Faker:
