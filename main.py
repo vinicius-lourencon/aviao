@@ -1,4 +1,4 @@
-
+from uuid import uuid4
 from typing import List
 from entidades.cliente import Cliente
 from entidades.voo import Voo
@@ -9,6 +9,7 @@ from gerador import gerar_cliente_faker, gerar_tripulante_faker
 import random
 import os
 
+    
 def clear_screen() -> None:
     """
     Limpa a tela do terminal.
@@ -87,8 +88,7 @@ def menu_visualizacao() -> None:
     while True:
         print("=== VISUALIZAÇÃO DE VOOS ===")
         print("1. Listar voos")
-        print("2. Ver destino de um voo")
-        print("3. Ver ocupação geral")
+        print("2. Ver ocupação geral")
         print("0. Voltar")
 
         escolha: str = input("Escolha uma opção: ")
@@ -97,9 +97,6 @@ def menu_visualizacao() -> None:
             clear_screen()
             listar_voos()
         elif escolha == "2":
-            clear_screen()
-            ver_destino()
-        elif escolha == "3":
             clear_screen()
             ver_ocupacao()
         elif escolha == "0":
@@ -179,18 +176,6 @@ def listar_voos() -> None:
     print("=== VOOS DISPONÍVEIS ===")
     for i, voo in enumerate(voos):
         print(f"{i} - Voo {voo.id_voo} para {voo.destino}")
-
-def ver_destino() -> None:
-    """
-    Permite consultar o destino de um voo específico.
-    """
-    listar_voos()
-    try:
-        idx: int = int(input("Digite o número do voo: "))
-        voo: Voo = voos[idx]
-        print(f"Destino do voo {voo.id_voo}: {voo.destino}")
-    except (ValueError, IndexError):
-        print("Entrada inválida.")
 
 def ver_tripulacao() -> None:
     """
@@ -364,9 +349,6 @@ def cadastrar_cliente() -> None:
     nome: str = input("Nome completo: ")
     cpf: str = input("CPF (apenas números): ")
     data_nasc: str = input("Data de nascimento (DD/MM/AAAA): ")
-
-    from entidades.cliente import Cliente
-    from uuid import uuid4
 
     id_ = str(uuid4())[:8]
     novo_cliente = Cliente(nome, cpf, id_, data_nasc)
