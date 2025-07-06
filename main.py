@@ -336,19 +336,25 @@ def reservar_assento() -> None:
 def ver_historico_cliente() -> None:
     """
     Permite consultar o histórico de reservas de um cliente a partir do CPF.
-    """
+    Mostra todas as tentativas de reserva.
+    """ 
     cpf: str = input("Digite o CPF do cliente: ")
 
-    for voo in voos:
-        for assento in voo.assentos:
-            if assento.ocupado and assento.cliente.cpf == cpf:
-                print(f"Reserva encontrada:")
-                print(f"Nome: {assento.cliente.nome}")
-                for r in assento.cliente.reservas:
-                    print(f"- Voo {r['voo']} para {r['destino']} - Assento {r['assento']}")
+    for cliente in clientes:  
+        if cliente.cpf == cpf:
+            if not cliente._historico_reservas:
+                print("Nenhuma reserva encontrada para este cliente.")
                 return
 
-    print("Nenhum histórico encontrado para esse CPF.")
+            print(f"Histórico de reservas de {cliente.nome}:\n")
+            for reserva in cliente._historico_reservas:
+                print(f"- Voo: {reserva['voo']}")
+                print(f"  Assento: {reserva['assento']}")
+                print(f"  Status: {reserva['status']}")
+                print(f"  Data: {reserva['data']}\n")
+            return
+
+    print("Cliente não encontrado.")
 
 def cadastrar_cliente() -> None:
     """
