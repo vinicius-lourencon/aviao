@@ -1,4 +1,4 @@
-from random import random
+import random
 from entidades.assento import Assento
 from entidades.tripulacao import Tripulante
 from typing import List
@@ -34,6 +34,11 @@ class Voo:
     def tripulacao(self) -> List[Tripulante]:
         """Retorna a tripulação do voo."""
         return self._tripulacao
+    
+    @property
+    def preco(self) -> float:
+        """Retorna o preço do voo."""
+        return self._preco
 
     def adicionar_tripulante(self, tripulante: Tripulante) -> None:
         """
