@@ -1,3 +1,4 @@
+from random import random
 from entidades.assento import Assento
 from entidades.tripulacao import Tripulante
 from typing import List
@@ -12,6 +13,7 @@ class Voo:
         self._destino: str = destino
         self._assentos: List[Assento] = [Assento(i + 1) for i in range(250)]
         self._tripulacao: List[Tripulante] = []
+        self._preco: float = random.choice([299.90, 399.90, 459.90])
 
     @property
     def id_voo(self) -> str:

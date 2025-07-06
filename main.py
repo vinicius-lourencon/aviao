@@ -3,6 +3,8 @@ from typing import List
 from entidades.cliente import Cliente
 from entidades.voo import Voo
 from entidades.assento import Assento
+from pagamento.pagamento import Pagamento
+from pagamento.forma_pagamento import FormaPagamento
 from gerador import gerar_cliente_faker, gerar_tripulante_faker
 import random
 import os
@@ -101,6 +103,7 @@ def menu_visualizacao() -> None:
             clear_screen()
             ver_ocupacao()
         elif escolha == "0":
+            clear_screen()
             break
         else:
             print("Opção inválida.")
@@ -132,6 +135,7 @@ def menu_administrador() -> None:
             clear_screen()
             ver_passageiros()
         elif opcao == "0":
+            clear_screen()
             break
         else:
             print("Opção inválida.")
@@ -163,6 +167,7 @@ def menu_cliente() -> None:
             clear_screen()
             cadastrar_cliente()
         elif opcao == "0":
+            clear_screen()
             break
         else:
             print("Opção inválida.")
@@ -213,7 +218,7 @@ def ver_ocupacao() -> None:
         print(f"=== Ocupação dos assentos no voo {voo.id_voo} para {voo.destino} ===")
 
         for assento in voo.assentos:
-            status = "✔ LIVRE" if not assento.ocupado else " OCUPADO"
+            status = "LIVRE" if not assento.ocupado else "OCUPADO"
             print(f"[{assento.numero:03}] {status}")
 
         ocupados = sum(1 for a in voo.assentos if a.ocupado)
@@ -241,25 +246,92 @@ def ver_passageiros() -> None:
 
 def reservar_assento() -> None:
     """
-    Permite reservar um assento para um cliente já cadastrado.
+    Permite que o usuário escolha um voo e reserve um assento para um cliente já cadastrado.
+    Realiza o pagamento da reserva e registra no histórico do cliente seja recusado ou aprovado.
     """
     if not clientes:
-        print(" Nenhum cliente cadastrado. Cadastre um antes de reservar.")
+        print("Nenhum cliente cadastrado. Cadastre um cliente antes de continuar.")
         return
 
     listar_voos()
+
     try:
         idx_voo: int = int(input("Escolha o número do voo para reserva: "))
         voo: Voo = voos[idx_voo]
-
-        print("=== Clientes Cadastrados ===")
-        for i, c in enumerate(clientes):
-            print(f"[{i}] {c.nome} | CPF: {c.cpf}")
-
-        idx_cliente: int = int(input("Escolha o cliente pelo número: "))
-        cliente = clientes[idx_cliente]
     except (ValueError, IndexError):
-        print(" Entrada inválida.")
+        print(" Voo inválido.")
+        return
+
+    # Seleciona cliente
+    print("=== Clientes Cadastrados ===")
+    for i, c in enumerate(clientes):
+        print(f"[{i}] {c.nome} | CPF: {c.cpf}")
+    try:
+        idx_cliente: int = int(input("Escolha o cliente pelo número: "))
+        cliente: Cliente = clientes[idx_cliente]
+    except (ValueError, IndexError):
+        print(" Cliente inválido.")
+        return
+
+    # Mostra assentos
+    print("=== Assentos Disponíveis ===")
+    for i, assento in enumerate(voo.assentos, start=1):
+        status = "X" if assento.ocupado else str(assento.numero)
+        print(f"{status:>3}", end="  ")
+        if i % 10 == 0:
+            print()
+    print()
+
+    try:
+        numero_escolhido: int = int(input("Digite o número do assento desejado: "))
+    except ValueError:
+        print(" Número inválido.")
+        return
+
+    assento_encontrado = next((a for a in voo.assentos if a.numero == numero_escolhido), None)
+
+    if not assento_encontrado:
+        print("Assento não encontrado.")
+        return
+
+    if assento_encontrado.ocupado:
+        print("Esse assento já está ocupado.")
+        return
+
+    # metodo de pagamento
+    print("=== Escolha a forma de pagamento ===")
+    for i, forma in enumerate(FormaPagamento):
+        print(f"[{i}] {forma.value}")
+    try:
+        idx_pag = int(input("Forma de pagamento: "))
+        forma_escolhida = list(FormaPagamento)[idx_pag]
+    except (ValueError, IndexError):
+        print("Opção inválida.")
+        return
+
+    pagamento = Pagamento(forma_escolhida)
+    sucesso = pagamento.realizar_pagamento(voo.preco)
+
+    # Associa cliente e pag ao assento
+    assento_encontrado.reservar(cliente)
+    assento_encontrado.pagamento = pagamento 
+
+    # Add no historico do cliente
+    cliente._historico_reservas.append({
+    "voo": voo.id_voo,
+    "assento": assento_encontrado.numero,
+    "status": pagamento.status.value,
+    "data": pagamento.data_transacao.strftime("%d/%m/%Y %H:%M:%S")
+    })
+
+    # Mensagem final
+    print("=== Resultado da Reserva ===")
+    if sucesso:
+        print(f"Reserva confirmada para {cliente.nome} no assento {numero_escolhido}.")
+    else:
+        print(f"Pagamento recusado. Mesmo assim, reserva registrada no histórico com status de pagamento.")
+    print(str(pagamento))
+    print()
         
 def ver_historico_cliente() -> None:
     """
