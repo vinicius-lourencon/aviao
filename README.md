@@ -61,7 +61,7 @@ projeto_reserva_voo/
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/projeto_reserva_voo.git
+git clone https://github.com/vinicius-lourencon/aviao.git
 cd projeto_reserva_voo
 ```
 
