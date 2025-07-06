@@ -241,40 +241,23 @@ def ver_passageiros() -> None:
 
 def reservar_assento() -> None:
     """
-    Permite ao cliente reservar um assento em um voo disponível.
-    Exibe todos os 250 assentos com indicação de ocupado ou livre.
+    Permite reservar um assento para um cliente já cadastrado.
     """
+    if not clientes:
+        print(" Nenhum cliente cadastrado. Cadastre um antes de reservar.")
+        return
+
     listar_voos()
     try:
-        idx: int = int(input("Escolha o número do voo para reserva: "))
-        voo: Voo = voos[idx]
+        idx_voo: int = int(input("Escolha o número do voo para reserva: "))
+        voo: Voo = voos[idx_voo]
 
-        print(f"=== Assentos no voo {voo.id_voo} para {voo.destino} ===\n")
-        for assento in voo.assentos:
-            status = " LIVRE" if not assento.ocupado else " OCUPADO"
-            print(f"[{assento.numero:03}] {status}")
+        print("=== Clientes Cadastrados ===")
+        for i, c in enumerate(clientes):
+            print(f"[{i}] {c.nome} | CPF: {c.cpf}")
 
-        numero: int = int(input("Digite o número do assento desejado: "))
-        assento_escolhido = next((a for a in voo.assentos if a.numero == numero), None)
-
-        if not assento_escolhido:
-            print(" Assento inexistente.")
-            return
-        if assento_escolhido.ocupado:
-            print(" Esse assento já está ocupado. Tente outro.")
-            return
-
-        nome: str = input("Digite seu nome completo: ")
-        cpf: str = input("Digite seu CPF (apenas números): ")
-
-        from entidades.cliente import Cliente
-
-        cliente = Cliente(nome, cpf)
-        assento_escolhido.reservar(cliente)
-        cliente.adicionar_reserva(voo.id_voo, voo.destino, assento_escolhido.numero)
-
-        print(f" Reserva feita com sucesso para {cliente.nome} no assento {numero}!")
-
+        idx_cliente: int = int(input("Escolha o cliente pelo número: "))
+        cliente = clientes[idx_cliente]
     except (ValueError, IndexError):
         print(" Entrada inválida.")
         
